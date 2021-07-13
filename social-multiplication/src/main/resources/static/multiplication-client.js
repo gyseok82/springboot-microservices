@@ -11,6 +11,21 @@ function updateMultiplication() {
     });
 }
 
+function updateStats(alias) {
+    $.ajax({
+        url: "http://localhost:8080/results?alias=" + alias
+    }).then(function (data) {
+        $('#stats-body').empty();
+        data.forEach(function (row) {
+            console.log(row);
+            $('#stats-body').append('<tr><td>' + row.id + '</td>' +
+                '<td>' + row.multiplication.factorA + ' x ' + row.multiplication.factorB + '</td>' +
+                '<td>' + row.resultAttempt + '</td>' +
+                '<td>' + (row.correct === true ? 'YES' : 'NO') + '</td></tr>');
+        });
+    });
+}
+
 $(document).ready(function () {
 
     updateMultiplication();
@@ -38,6 +53,7 @@ $(document).ready(function () {
             dataType: "json",
             success: [
                 function (result) {
+                    console.log(result);
                     if (result.correct) {
                         $('.result-message').empty().append("정답입니다! 축하드려요!");
                     } else {
@@ -53,5 +69,7 @@ $(document).ready(function () {
         });
 
         updateMultiplication();
+
+        updateStats(userAlias);
     });
 })
